@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Sash3>
+  <props version="0.0.1"/>
+  <commands>
+    <command name="Run" minPossibleArgs="1" maxPossibleArgs="2" ignoreRest="true" />
+    <command name="Delete" minPossibleArgs="1" maxPossibleArgs="5" ignoreRest="true" />
+    <command name="Cd" minPossibleArgs="1" maxPossibleArgs="1" ignoreRest="true" />
+    <command name="Ls" no-args="true"/>
+  </commands>
+</Sash3>
