@@ -3,10 +3,43 @@ using System.Linq;
 
 namespace SASH3
 {
+    /// <summary>
+    /// Base of all commands with arguments.
+    /// </summary>
+    internal interface IArgumentedCommand
+    {
+        /// <summary>
+        /// The name of the command.
+        /// </summary>
+        string Name { get; }
+
+        /// <summary>
+        /// Gives back a string containing all arguments and short explanation of the command.
+        /// </summary>
+        /// <returns>string</returns>
+        string GetHelp();
+
+        /// <summary>
+        /// Gives back a <see cref="System.Collections.Generic.IEnumerable{string}"/> with all possible arguments.
+        /// </summary>
+        /// <returns>IEnumerable<string></returns>
+        System.Collections.Generic.IEnumerable<string> GetPossibleArgs();
+    }
+
+    /// <summary>
+    /// A CD (current directory) command.
+    /// </summary>
     class Cd
     {
+        /// <summary>
+        /// The current execution path.
+        /// </summary>
         public static string CurrentPath = System.IO.Directory.GetCurrentDirectory();
 
+        /// <summary>
+        /// Sets the current execution path to the given <paramref name="path"/> argument.
+        /// </summary>
+        /// <param name="path">The new path to set to.</param>
         public Cd(string path)
         {
             if (string.IsNullOrEmpty(path))
@@ -23,6 +56,9 @@ namespace SASH3
         }
     }
 
+    /// <summary>
+    /// A basic outline of a command.
+    /// </summary>
     struct Command
     {
         public string Name;
@@ -37,6 +73,14 @@ namespace SASH3
 
     static class Start
     {
+        /// <summary>
+        /// Works in the same way as <see cref="string.Substring(int, int)"/> but for an array.
+        /// </summary>
+        /// <typeparam name="T">The type of the array.</typeparam>
+        /// <param name="arr">The array.</param>
+        /// <param name="start">The start index.</param>
+        /// <param name="end">The end index.</param>
+        /// <returns>T[]</returns>
         static T[] SubArr<T>(this T[] arr, int start, int end)
         {
             if ((end - start) <= 0)
@@ -46,9 +90,19 @@ namespace SASH3
             return list.ToArray();
         }
 
+        /// <summary>
+        /// Parses a new <see cref="Command"/>, removes all empty spaces in the given command line.
+        /// </summary>
+        /// <param name="str">The command line.</param>
+        /// <returns>Command</returns>
         static Command ParseCommand(string str)
-            => new Command(str.Split(' ')[0].ToLower(), str.Split(' ').Skip(1).ToArray());
+            => new Command(str.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[0].ToLower(),
+                str.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Skip(1).ToArray());
 
+        /// <summary>
+        /// Executes the given <paramref name="command"/>.
+        /// </summary>
+        /// <param name="command">The command to execute.</param>
         static void Execute(Command command)
         {
             if (command.Name == "clear")
@@ -84,9 +138,13 @@ namespace SASH3
                     return;
                 }
 
-            Console.WriteLine("COMMAND NOT FOUND!");
+            Console.WriteLine($"COMMAND \"{command.Name}\" NOT FOUND!");
         }
 
+        /// <summary>
+        /// Creates a new instance object and runs the given <paramref name="command"/>.
+        /// </summary>
+        /// <param name="command">The command to run.</param>
         static void Run(Command command)
         {
             switch (command.Name)

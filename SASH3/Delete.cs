@@ -1,10 +1,13 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace SASH3
 {
-    class Delete
+    class Delete : IArgumentedCommand
     {
+        public string Name => nameof(Delete);
+
         static void DeleteDirectoryTree(DirectoryInfo root, string where = null, bool forced = false)
         {
             if (!forced)
@@ -45,8 +48,26 @@ namespace SASH3
             {
                 Directory.Delete(root.FullName);
             }
-            catch { ; }
+            catch {; }
         }
+
+        public string GetHelp()
+        {
+            string help = "Help for command " + this.Name;
+            help += "\nPossible arguments for the command:";
+            System.Threading.Tasks.Parallel.ForEach(GetPossibleArgs(), curr => help += $"\n\t{curr}");
+            return help;
+        }
+        public IEnumerable<string> GetPossibleArgs()
+            => new string[]
+            {
+                "FILENAME",
+                "*",
+                "FILENAME in DIR",
+                "FILENAME in . || FILENAME in path",
+                "* in DIR where SIGN"
+            };
+            
 
         public Delete(string[] args)
         {
@@ -59,6 +80,8 @@ namespace SASH3
              delete * in c:\ where *.cs -> this will delete ALL FILES with extension ".cs"
              */
 
+            if (args.Length == 1 && (args[0] == "help" || args[0] == "-h"))
+                Console.WriteLine(GetHelp());
 
             if (args.Length == 1 && args[0] != "*") // delete FILENAME
                 File.Delete(args[0]);
