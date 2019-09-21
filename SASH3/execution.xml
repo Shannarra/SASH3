@@ -8,5 +8,6 @@
     <command name="Ls" no-args="true"/>
     <command name="Clear" no-args="true" />
     <command name="Exit" no-args="true" />
+    <command name="Curl" minPossibleArgs="1" maxPossibleArgs="2" ignoreRest="true" />
   </commands>
 </Sash3>

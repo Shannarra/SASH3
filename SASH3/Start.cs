@@ -152,6 +152,7 @@ namespace SASH3
                 case "run": new Run(command.Args); break;
                 case "delete": new Delete(command.Args); break;
                 case "cd": new Cd(command.Args[0]); break;
+                case "curl": new Curl(command.Args); break;
             }
         }
 

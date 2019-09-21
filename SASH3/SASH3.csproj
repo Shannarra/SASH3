@@ -39,6 +39,7 @@
     <Content Include="execution.xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Curl.cs" />
     <Compile Include="Delete.cs" />
     <Compile Include="Ls.cs" />
     <Compile Include="Run.cs" />
