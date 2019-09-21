@@ -1,9 +1,21 @@
+using System.Collections.Generic;
+
 namespace SASH3
 {
-    class Run
+    /// <summary>
+    /// Runs a given executable file with a given window style.
+    /// </summary>
+    class Run : IArgumentedCommand
     {
+        /// <summary>
+        /// The current working process.
+        /// </summary>
         readonly System.Diagnostics.Process process = new System.Diagnostics.Process();
+        public string Name => nameof(Run);
 
+        /// <summary>
+        /// Runs the given executable with the given style.
+        /// </summary>
         public Run(string[] args)
         {
             process.StartInfo.FileName = args[0];
@@ -32,5 +44,20 @@ namespace SASH3
                 System.Console.WriteLine("File to run was not found!");
             }
         }
+
+
+        public string GetHelp()
+        {
+            string help = "Help for command " + this.Name;
+            help += "\nPossible arguments for the command:";
+            System.Threading.Tasks.Parallel.ForEach(GetPossibleArgs(), curr => help += $"\n\t{curr}");
+            return help;
+        }
+        public IEnumerable<string> GetPossibleArgs()
+            => new string[]
+            {
+                "PROGRAM_NAME",
+                "PROGRAM_NAME STYLE(MINIMIZED | NORMAL | MAXIMIZED) = NORMAL"
+            };
     }
 }

@@ -4,10 +4,21 @@ using System.IO;
 
 namespace SASH3
 {
+    /// <summary>
+    /// Deletes file(s) in the current directory.
+    /// </summary>
     class Delete : IArgumentedCommand
     {
         public string Name => nameof(Delete);
 
+        /// <summary>
+        /// Deep traverses the current directory tree, starting with the given <paramref name="root"/>.
+        /// Asks a question if <paramref name="forced"/> isn't false, deletes all files where the parameter 
+        /// "<paramref name="where"/>" matches the current file/folder name.
+        /// </summary>
+        /// <param name="root">The root of the directory tree.</param>
+        /// <param name="where">The common sign of all files/folders to be deleted.</param>
+        /// <param name="forced">Just delete all files in the current tree?</param>
         static void DeleteDirectoryTree(DirectoryInfo root, string where = null, bool forced = false)
         {
             if (!forced)
@@ -69,6 +80,10 @@ namespace SASH3
             };
             
 
+        /// <summary>
+        /// Runs the delete command with the given <paramref name="args"/>
+        /// </summary>
+        /// <param name="args">The command's arguments.</param>
         public Delete(string[] args)
         {
             /*

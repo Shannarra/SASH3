@@ -3,8 +3,15 @@ using System.IO;
 
 namespace SASH3
 {
+    /// <summary>
+    /// Lists everything in the current execution directory.
+    /// </summary>
     class Ls
     {
+        /// <summary>
+        /// Walks the current directory tree and prints out all items in it.
+        /// </summary>
+        /// <param name="root">The tree's root.</param>
         static void WalkDirectoryTree(DirectoryInfo root)
         {
             FileInfo[] files = null;
@@ -35,6 +42,8 @@ namespace SASH3
         {
             if (string.IsNullOrEmpty(dir))
                 WalkDirectoryTree(new DirectoryInfo(Cd.CurrentPath));
+            else if (Directory.Exists(dir))
+                WalkDirectoryTree(new DirectoryInfo(dir));
         }
     }
 }

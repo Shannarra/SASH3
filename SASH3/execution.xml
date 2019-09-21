@@ -6,5 +6,7 @@
     <command name="Delete" minPossibleArgs="1" maxPossibleArgs="5" ignoreRest="true" />
     <command name="Cd" minPossibleArgs="1" maxPossibleArgs="1" ignoreRest="true" />
     <command name="Ls" no-args="true"/>
+    <command name="Clear" no-args="true" />
+    <command name="Exit" no-args="true" />
   </commands>
 </Sash3>
