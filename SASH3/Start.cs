@@ -183,22 +183,23 @@ namespace SASH3
             {
                 try
                 {
-                    if (cmd.Args.Contains("&&"))
+                    if (cmd.Args.Contains("&&")) // chaining infinite number of commands
                     {
-                        int ind = 0;
-                        for (int i = 0; i < cmd.Args.Length; i++)
-                            if (cmd.Args[i] == "&&")
-                                ind = i;
-                        System.Collections.Generic.List<string> first = new System.Collections.Generic.List<string>();
-                        System.Collections.Generic.List<string> second = new System.Collections.Generic.List<string>();
+                        string str = "";
+                        foreach (string item in cmd.Args)
+                            str += item + " ";
 
-                        for (int i = 0; i < ind; i++)
-                            first.Add(cmd.Args[i]);
-                        for (int i = ind + 2; i < cmd.Args.Length; i++)
-                            second.Add(cmd.Args[i]);
+                        string[] cmds = str.Split(new string[] { "&&" }, 
+                            StringSplitOptions.RemoveEmptyEntries);
 
-                        Execute(new Command(cmd.Name, first.ToArray()));
-                        Execute(new Command(cmd.Args[ind + 1], second.ToArray()));
+                        for (int i = 0; i < cmds.Length; i++)
+                        {
+                            if (i == 0)
+                                Execute(new Command(cmd.Name, cmds[i].Split(' ')));
+                            else // cmds[i] -> a command to be executed
+                                Execute(ParseCommand(cmds[i]));
+                        }
+
                     }
                     else
                         Execute(cmd);
