@@ -10,5 +10,6 @@
     <command name="Exit" no-args="true" />
     <command name="Curl" minPossibleArgs="1" maxPossibleArgs="2" ignoreRest="true" />
     <command name="Cat" minPossibleArgs="1" maxPossibleArgs="1" ignoreRest="true" />
+    <command name="Nth" minPossibleArgs="1" maxPossibleArgs="1" ignoreRest="true" />
   </commands>
 </Sash3>

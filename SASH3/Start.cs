@@ -122,8 +122,14 @@ namespace SASH3
         /// Executes the given <paramref name="command"/>.
         /// </summary>
         /// <param name="command">The command to execute.</param>
-        static void Execute(Command command)
+        public static void Execute(Command command)
         {
+            if (command.Name == "nth")
+            {
+                new Nth(new Command(command.Args[0], command.Args.Skip(1).ToArray()));
+                return;
+            }
+
             if (command.Name == "clear")
             {
                 Console.Clear();

@@ -18,4 +18,24 @@
                 System.Console.WriteLine($"The file \"{file}\" doesn't exist!");
         }
     }
+
+	/// <summary>
+    /// Spawns a new thread in order to execute a command.
+    /// </summary>
+    class Nth
+    {
+        private readonly System.Threading.Thread thread;
+		
+        public Nth(Command command)
+        {
+            thread = new System.Threading.Thread(() => { Start.Execute(command); });
+            thread.Start();
+        }
+
+        ~Nth()
+        {
+            if (thread.IsAlive)
+                thread.Abort();
+        }
+    }
 }
