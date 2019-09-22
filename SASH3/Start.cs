@@ -51,8 +51,22 @@ namespace SASH3
                     CurrentPath = CurrentPath.Substring(0, CurrentPath.LastIndexOf(@"\"));
                 }
                 catch (IndexOutOfRangeException) {; }
-            else
+                catch (ArgumentOutOfRangeException) {; }
+            else if (path.Contains("../"))
+                System.Threading.Tasks.Parallel.ForEach(path.Split('/'), (x) => 
+                {
+                    try
+                    {
+                        CurrentPath = CurrentPath.Substring(0, CurrentPath.LastIndexOf(@"\"));
+                    }
+                    catch (IndexOutOfRangeException) {; }
+                    catch (ArgumentOutOfRangeException) {; }  
+                });
+                    
+            else if (System.IO.Directory.Exists(System.IO.Path.Combine(CurrentPath, path)))
                 CurrentPath += $@"\{path}";
+            else
+                Console.WriteLine($"Given path \"{CurrentPath + $@"\{path}"}\" does not exist!");
         }
     }
 
@@ -85,9 +99,14 @@ namespace SASH3
         {
             if ((end - start) <= 0)
                 return arr;
-            System.Collections.Generic.List<T> list = arr.ToList();
-            list.RemoveRange(start + 1, (end - start) + end);
-            return list.ToArray();
+            try
+            {
+                System.Collections.Generic.List<T> list = arr.ToList();
+                list.RemoveRange(start + 1, (end - start) + end);
+                return list.ToArray();
+            }
+            catch (ArgumentException) { return arr; }
+            
         }
 
         /// <summary>
@@ -153,6 +172,7 @@ namespace SASH3
                 case "delete": new Delete(command.Args); break;
                 case "cd": new Cd(command.Args[0]); break;
                 case "curl": new Curl(command.Args); break;
+                case "cat": new Cat(command.Args[0]); break;
             }
         }
 
@@ -163,7 +183,25 @@ namespace SASH3
             {
                 try
                 {
-                    Execute(cmd);
+                    if (cmd.Args.Contains("&&"))
+                    {
+                        int ind = 0;
+                        for (int i = 0; i < cmd.Args.Length; i++)
+                            if (cmd.Args[i] == "&&")
+                                ind = i;
+                        System.Collections.Generic.List<string> first = new System.Collections.Generic.List<string>();
+                        System.Collections.Generic.List<string> second = new System.Collections.Generic.List<string>();
+
+                        for (int i = 0; i < ind; i++)
+                            first.Add(cmd.Args[i]);
+                        for (int i = ind + 2; i < cmd.Args.Length; i++)
+                            second.Add(cmd.Args[i]);
+
+                        Execute(new Command(cmd.Name, first.ToArray()));
+                        Execute(new Command(cmd.Args[ind + 1], second.ToArray()));
+                    }
+                    else
+                        Execute(cmd);
                 }
                 catch (IndexOutOfRangeException) { Console.WriteLine("Illegal number of arguments!"); }
                 Console.Write(Cd.CurrentPath + "> "); cmd = ParseCommand(Console.ReadLine());

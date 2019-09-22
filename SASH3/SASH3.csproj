@@ -34,6 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <Compile Include="Miscellaneous.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="execution.xml" />
