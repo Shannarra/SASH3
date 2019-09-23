@@ -42,6 +42,21 @@ namespace SASH3
         /// <param name="command">The command to execute.</param>
         public static void Execute(Command command)
         {
+            if (command.Name == "time")
+            {
+                if (command.Args[0] == "nth")
+                {
+                    Console.WriteLine("Do not try to time \"nth\" command.");
+                    Execute(new Command(command.Args[0], command.Args.Skip(1).ToArray()));
+                    return;
+                }
+
+                DateTime start = DateTime.Now;
+                Execute(new Command(command.Args[0], command.Args.Skip(1).ToArray()));
+                Console.WriteLine($"The command \"{command.Args[0]}\" took {((DateTime.Now - start).Ticks) / 10000}ms");
+                return;
+            }
+
             if (command.Name == "nth")
             {
                 new Nth(new Command(command.Args[0], command.Args.Skip(1).ToArray()));
@@ -115,7 +130,6 @@ namespace SASH3
 
                         string[] cmds = str.Split(new string[] { "&&" }, 
                             StringSplitOptions.RemoveEmptyEntries);
-
                         for (int i = 0; i < cmds.Length; i++)
                         {
                             if (i == 0)
@@ -126,6 +140,7 @@ namespace SASH3
                     }
                     else
                         Execute(cmd);
+
                     Console.Write(Cd.CurrentPath + "> "); cmd = ParseCommand(Console.ReadLine());
                 }
             }
