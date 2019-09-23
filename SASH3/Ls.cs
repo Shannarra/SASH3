@@ -42,8 +42,6 @@ namespace SASH3
         {
             if (string.IsNullOrEmpty(dir))
                 WalkDirectoryTree(new DirectoryInfo(Cd.CurrentPath));
-            else if (Directory.Exists(dir))
-                WalkDirectoryTree(new DirectoryInfo(dir));
         }
     }
 }

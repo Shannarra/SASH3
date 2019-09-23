@@ -3,88 +3,6 @@ using System.Linq;
 
 namespace SASH3
 {
-    /// <summary>
-    /// Base of all commands with arguments.
-    /// </summary>
-    internal interface IArgumentedCommand
-    {
-        /// <summary>
-        /// The name of the command.
-        /// </summary>
-        string Name { get; }
-
-        /// <summary>
-        /// Gives back a string containing all arguments and short explanation of the command.
-        /// </summary>
-        /// <returns>string</returns>
-        string GetHelp();
-
-        /// <summary>
-        /// Gives back a <see cref="System.Collections.Generic.IEnumerable{string}"/> with all possible arguments.
-        /// </summary>
-        /// <returns>IEnumerable<string></returns>
-        System.Collections.Generic.IEnumerable<string> GetPossibleArgs();
-    }
-
-    /// <summary>
-    /// A CD (current directory) command.
-    /// </summary>
-    class Cd
-    {
-        /// <summary>
-        /// The current execution path.
-        /// </summary>
-        public static string CurrentPath = System.IO.Directory.GetCurrentDirectory();
-
-        /// <summary>
-        /// Sets the current execution path to the given <paramref name="path"/> argument.
-        /// </summary>
-        /// <param name="path">The new path to set to.</param>
-        public Cd(string path)
-        {
-            if (string.IsNullOrEmpty(path))
-                return;
-
-            if (path == "..")
-                try
-                {
-                    CurrentPath = CurrentPath.Substring(0, CurrentPath.LastIndexOf(@"\"));
-                }
-                catch (IndexOutOfRangeException) {; }
-                catch (ArgumentOutOfRangeException) {; }
-            else if (path.Contains("../"))
-                System.Threading.Tasks.Parallel.ForEach(path.Split('/'), (x) => 
-                {
-                    try
-                    {
-                        CurrentPath = CurrentPath.Substring(0, CurrentPath.LastIndexOf(@"\"));
-                    }
-                    catch (IndexOutOfRangeException) {; }
-                    catch (ArgumentOutOfRangeException) {; }  
-                });
-                    
-            else if (System.IO.Directory.Exists(System.IO.Path.Combine(CurrentPath, path)))
-                CurrentPath += $@"\{path}";
-            else
-                Console.WriteLine($"Given path \"{CurrentPath + $@"\{path}"}\" does not exist!");
-        }
-    }
-
-    /// <summary>
-    /// A basic outline of a command.
-    /// </summary>
-    struct Command
-    {
-        public string Name;
-        public string[] Args;
-
-        public Command(string name, string[] args)
-        {
-            this.Name = name;
-            this.Args = args;
-        }
-    }
-
     static class Start
     {
         /// <summary>
@@ -184,10 +102,10 @@ namespace SASH3
 
         static void Main()
         {
-            Console.Write(Cd.CurrentPath + "> "); var cmd = ParseCommand(Console.ReadLine());
-            while (cmd.Name != "exit")
+            try
             {
-                try
+                Console.Write(Cd.CurrentPath + "> "); var cmd = ParseCommand(Console.ReadLine());
+                while (cmd.Name != "exit")
                 {
                     if (cmd.Args.Contains("&&")) // chaining infinite number of commands
                     {
@@ -205,14 +123,13 @@ namespace SASH3
                             else // cmds[i] -> a command to be executed
                                 Execute(ParseCommand(cmds[i]));
                         }
-
                     }
                     else
                         Execute(cmd);
+                    Console.Write(Cd.CurrentPath + "> "); cmd = ParseCommand(Console.ReadLine());
                 }
-                catch (IndexOutOfRangeException) { Console.WriteLine("Illegal number of arguments!"); }
-                Console.Write(Cd.CurrentPath + "> "); cmd = ParseCommand(Console.ReadLine());
             }
+            catch (IndexOutOfRangeException) { Console.WriteLine("Illegal number of arguments!"); Main(); }
         }
     }
 }

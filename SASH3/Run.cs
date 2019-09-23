@@ -11,13 +11,18 @@ namespace SASH3
         /// The current working process.
         /// </summary>
         readonly System.Diagnostics.Process process = new System.Diagnostics.Process();
+
         public string Name => nameof(Run);
+
+        public System.DateTime StartTime;
 
         /// <summary>
         /// Runs the given executable with the given style.
         /// </summary>
         public Run(string[] args)
         {
+            StartTime = System.DateTime.Now;
+
             process.StartInfo.FileName = args[0];
             if (args.Length == 2)
                 switch (args[1])
@@ -45,7 +50,6 @@ namespace SASH3
             }
         }
 
-
         public string GetHelp()
         {
             string help = "Help for command " + this.Name;
@@ -53,6 +57,7 @@ namespace SASH3
             System.Threading.Tasks.Parallel.ForEach(GetPossibleArgs(), curr => help += $"\n\t{curr}");
             return help;
         }
+
         public IEnumerable<string> GetPossibleArgs()
             => new string[]
             {
