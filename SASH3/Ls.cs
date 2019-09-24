@@ -40,6 +40,12 @@ namespace SASH3
 
         public Ls(string dir)
         {
+            if (dir == "-h" || dir == "help")
+            {
+                Console.WriteLine("Help for command Ls");
+                Console.WriteLine("This command accepts no arguments. \nLists all files and folders in the current execution folder.");
+            }
+
             if (string.IsNullOrEmpty(dir))
                 WalkDirectoryTree(new DirectoryInfo(Cd.CurrentPath));
         }

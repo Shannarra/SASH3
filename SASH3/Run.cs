@@ -14,14 +14,16 @@ namespace SASH3
 
         public string Name => nameof(Run);
 
-        public System.DateTime StartTime;
-
         /// <summary>
         /// Runs the given executable with the given style.
         /// </summary>
         public Run(string[] args)
         {
-            StartTime = System.DateTime.Now;
+            if (args[0]=="help" || args[0] == "-h")
+            {
+                System.Console.WriteLine(GetHelp());
+                return;
+            }
 
             process.StartInfo.FileName = args[0];
             if (args.Length == 2)
